@@ -3,7 +3,7 @@ local s, id = GetID()
 function s.initial_effect(c)
   --fusion material
   c:EnableReviveLimit()
-  Fusion.AddProcMixRep(c,true,true,aux.FilterBoolFunctionEx(Card.IsRace,RACE_ZOMBIE),1,1,66666021,66666020)
+  Fusion.AddProcMixRep(c,true,true,aux.FilterBoolFunctionEx(s.matfilter),1,1,66666021,66666020)
   --equip
   local e1=Effect.CreateEffect(c)
   e1:SetDescription(aux.Stringid(id,0))
@@ -15,6 +15,9 @@ function s.initial_effect(c)
   e1:SetOperation(s.eqop)
   c:RegisterEffect(e1)
   aux.AddEREquipLimit(c,nil,aux.FilterBoolFunction(Card.IsType,TYPE_MONSTER),s.equipop,e1)
+end
+function s.matfilter(c,fc,sumtype,tp)
+	return c:IsRace(RACE_ZOMBIE,fc,sumtype,tp) and c:IsLevelBelow(4)
 end
 function s.eqcon(e,tp,eg,ep,ev,re,r,rp)
   local c=e:GetHandler()
