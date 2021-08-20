@@ -19,13 +19,30 @@ function s.initial_effect(c)
   e2:SetCategory(CATEGORY_DAMAGE)
   e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
   e2:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-  e2:SetRange(LOCATION_SZONE)
+  e2:SetRange(LOCATION_MZONE)
   e2:SetCountLimit(1)
   e2:SetCode(EVENT_SPSUMMON_SUCCESS)
   e2:SetCondition(s.damcon)
   e2:SetTarget(s.damtg)
   e2:SetOperation(s.damop)
   c:RegisterEffect(e2)
+end
+function s.tg(e,c)
+  if c:GetFlagEffect(1)==0 then
+    c:RegisterFlagEffect(1,0,0,0)
+    local eff
+    if c:IsLocation(LOCATION_MZONE) then
+      eff={Duel.GetPlayerEffect(c:GetControler(),EFFECT_NECRO_VALLEY)}
+    else
+      eff={c:GetCardEffect(EFFECT_NECRO_VALLEY)}
+    end
+    c:ResetFlagEffect(1)
+    for _,te in ipairs(eff) do
+      local op=te:GetOperation()
+      if not op or op(e,c) then return false end
+    end
+  end
+  return true
 end
 function s.filter(c,tp)
   return c:IsFaceup() and c:IsControler(tp)
