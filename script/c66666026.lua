@@ -3,7 +3,7 @@ local s, id = GetID()
 function s.initial_effect(c)
   --synchro summon
   c:EnableReviveLimit()
-  Synchro.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsCode,66666023),1,1,Synchro.NonTunerEx(Card.IsCode,66666024,66666013),1,1,Synchro.NonTunerEx(Card.IsRace,RACE_ZOMBIE),1,99)
+  Synchro.AddMajesticProcedure(c,aux.FilterBoolFunction(Card.IsCode,66666023),true,aux.FilterBoolFunction(Card.IsCode,66666024),aux.FilterBoolFunction(Card.IsCode,66666013),true,Synchro.NonTunerEx(Card.IsRace,RACE_ZOMBIE),true)
   --race
   local e1=Effect.CreateEffect(c)
   e1:SetType(EFFECT_TYPE_FIELD)
@@ -27,6 +27,8 @@ function s.initial_effect(c)
   e2:SetOperation(s.damop)
   c:RegisterEffect(e2)
 end
+s.material={66666023,66666024,66666013}
+s.listed_names={66666023,66666024,66666013}
 function s.tg(e,c)
   if c:GetFlagEffect(1)==0 then
     c:RegisterFlagEffect(1,0,0,0)
