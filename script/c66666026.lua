@@ -3,17 +3,14 @@ local s, id = GetID()
 function s.initial_effect(c)
   --pendulum summon
   Pendulum.AddProcedure(c)
-  --Add from the deck to the hand
+  --destroy replace
 	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(id,1))
-	e1:SetCategory(CATEGORY_DESTROY+CATEGORY_TOHAND+CATEGORY_SEARCH)
-	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
-  e1:SetCountLimit(1,id)
-	e1:SetCode(EVENT_PHASE+PHASE_END)
+	e1:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_FIELD)
+	e1:SetCode(EFFECT_DESTROY_REPLACE)
 	e1:SetRange(LOCATION_PZONE)
-	e1:SetCondition(s.thcon)
-	e1:SetTarget(s.thtg)
-	e1:SetOperation(s.thop)
+	e1:SetTarget(s.reptg)
+	e1:SetValue(s.repval)
+	e1:SetOperation(s.repop)
 	c:RegisterEffect(e1)
   --race
   local e2=Effect.CreateEffect(c)
@@ -38,29 +35,21 @@ function s.initial_effect(c)
   e3:SetOperation(s.damop)
   c:RegisterEffect(e3)
 end
-s.listed_series={0x18a}
-function s.thcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetTurnPlayer()==tp
+function s.filter(c,tp)
+	return c:IsFaceup() and c:IsControler(tp) and c:IsLocation(LOCATION_MZONE)
+		and c:IsRace(RACE_ZOMBIE) and not c:IsReason(REASON_REPLACE)
 end
-function s.filter(c)
-	return c:IsSetCard(0x18a) and c:IsAbleToHand()
-end
-function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsDestructable()
-		and Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil) and Duel.GetFlagEffect(tp,id+1)==0 end
-	Duel.RegisterFlagEffect(tp,id+1,RESET_PHASE+PHASE_END,0,1)
-	Duel.SetOperationInfo(0,CATEGORY_DESTROY,e:GetHandler(),1,0,0)
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
-end
-function s.thop(e,tp,eg,ep,ev,re,r,rp)
+function s.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) or Duel.Destroy(c,REASON_EFFECT)==0 then return end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_DECK,0,1,1,nil)
-	if #g>0 then
-		Duel.SendtoHand(g,nil,REASON_EFFECT)
-		Duel.ConfirmCards(1-tp,g)
-	end
+	if chk==0 then return eg:IsExists(s.filter,1,nil,tp)
+		and c:IsDestructable(e) and not c:IsStatus(STATUS_DESTROY_CONFIRMED) end
+	return Duel.SelectEffectYesNo(tp,c,96)
+end
+function s.repval(e,c)
+	return s.filter(c,e:GetHandlerPlayer())
+end
+function s.repop(e,tp,eg,ep,ev,re,r,rp)
+	Duel.Destroy(e:GetHandler(),REASON_EFFECT+REASON_REPLACE)
 end
 function s.tg(e,c)
   if c:GetFlagEffect(1)==0 then
