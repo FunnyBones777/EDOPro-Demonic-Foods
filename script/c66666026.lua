@@ -3,7 +3,7 @@ local s, id = GetID()
 function s.initial_effect(c)
   --synchro summon
   c:EnableReviveLimit()
-  Synchro.AddProcedure(c,aux.FilterBoolFunction(Card.IsCode,66666023),true,aux.FilterBoolFunction(Card.IsCode,66666024),true,aux.FilterBoolFunction(Card.IsCode,66666013),true)
+  Synchro.AddMajesticProcedure(c,aux.FilterBoolFunction(Card.IsCode,66666023),true,aux.FilterBoolFunction(Card.IsCode,66666024),true,aux.FilterBoolFunction(Card.IsCode,66666013),true,Synchro.NonTunerEx(Card.IsRace,RACE_ZOMBIE),1,99)
   --race
   local e1=Effect.CreateEffect(c)
   e1:SetType(EFFECT_TYPE_FIELD)
