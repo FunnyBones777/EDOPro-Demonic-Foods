@@ -68,17 +68,17 @@ function s.tg(e,c)
   end
   return true
 end
-function s.filter(c,tp)
+function s.damagefilter(c,tp)
   return c:IsFaceup() and c:IsControler(tp)
 end
 function s.damcon(e,tp,eg,ep,ev,re,r,rp)
-  return eg:IsExists(s.filter,1,nil,tp)
+  return eg:IsExists(s.damagefilter,1,nil,tp)
 end
 function s.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
   if chk==0 then return true end
   Duel.SetTargetPlayer(1-tp)
   Duel.SetTargetParam(1000)
-  Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,800)
+  Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,1000)
 end
 function s.damop(e,tp,eg,ep,ev,re,r,rp)
   if not e:GetHandler():IsRelateToEffect(e) then return end
