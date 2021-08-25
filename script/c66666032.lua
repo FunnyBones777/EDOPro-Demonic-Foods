@@ -16,7 +16,7 @@ function s.initial_effect(c)
   	e1:SetOperation(s.swooperation)
   	c:RegisterEffect(e1)
   --change race
-  local e2=Effect.CreateEffect(c)
+  	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,0))
 	e2:SetType(EFFECT_TYPE_IGNITION)
 	e2:SetCode(EVENT_FREE_CHAIN)
@@ -29,7 +29,7 @@ end
 s.listed_series={0x18a, 0x18b}
 --Rusty Old Sword
 function s.swofilter(c)
-	return c:IsSetCard(0x18a, 0x18b) and c:IsDiscardable()
+	return c:IsSetCard(0x18a) and c:IsDiscardable() or c:IsSetCard(0x18b) and c:IsDiscardable()
 end
 function s.swocost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.swofilter,tp,LOCATION_HAND,0,1,nil) end
