@@ -29,7 +29,7 @@ end
 s.listed_series={0x18a, 0x18b}
 --Rusty Old Sword
 function s.swofilter(c)
-	return c:IsSetCard(0x18a) and c:IsDiscardable() or c:IsSetCard(0x18b) and c:IsDiscardable()
+	return c:IsSetCard(0x18a) or c:IsSetCard(0x18b) and c:IsDiscardable()
 end
 function s.swocost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.swofilter,tp,LOCATION_HAND,0,1,nil) end
